@@ -26,7 +26,7 @@ struct Submarine {
     uint32_t aim;
     std::unordered_map<Movement, std::function<void(Submarine&, const uint32_t)>> actions;
     void perform_command(const Command &&command);
-    void action(const Command &command);
+    void perform_command(const Command &command);
     uint32_t calculateTotal() const;
 };
 

@@ -15,7 +15,7 @@ void run_submarine(const std::vector<Command> &commands, const auto &forward_act
             { Movement::up, up_action}
     };
     for (auto &command : commands) {
-        submarine.action(command);
+        submarine.perform_command(command);
     }
     auto after = std::chrono::high_resolution_clock::now() - before;
     std::printf("Elapsed time: %lld microseconds\n", std::chrono::duration_cast<std::chrono::microseconds>(after).count());
