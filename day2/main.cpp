@@ -6,6 +6,22 @@
 #include <chrono>
 #include <cstdio>
 
+void run_submarine(const std::vector<Command> &commands, const auto &forward_action, const auto &down_action, const auto &up_action) {
+    auto before = std::chrono::high_resolution_clock::now();
+    Submarine submarine{0, 0, 0};
+    submarine.actions = {
+            { Movement::forward, forward_action},
+            { Movement::down, down_action},
+            { Movement::up, up_action}
+    };
+    for (auto &command : commands) {
+        submarine.action(command);
+    }
+    auto after = std::chrono::high_resolution_clock::now() - before;
+    std::printf("Elapsed time: %lld microseconds\n", std::chrono::duration_cast<std::chrono::microseconds>(after).count());
+    std::printf("Submarine at horizontal position=[%d], depth=[%d] (Total: %d)\n", submarine.horizontal_position, submarine.depth, submarine.calculateTotal());
+}
+
 int main() {
     const std::vector<Command> commands = {
             {Movement::forward, 4},
@@ -1009,12 +1025,9 @@ int main() {
             {Movement::forward, 4},
             {Movement::forward, 8},
     };
-    auto before = std::chrono::high_resolution_clock::now();
-    Submarine submarine{0, 0};
-    for (auto &command : commands) {
-        submarine.action(command);
-    }
-    auto after = std::chrono::high_resolution_clock::now() - before;
-    std::printf("Elapsed time: %lld microseconds\n", std::chrono::duration_cast<std::chrono::microseconds>(after).count());
-    std::printf("Submarine at horizontal position=[%d], depth=[%d] (Total: %d)\n", submarine.horizontal_position, submarine.depth, submarine.calculateTotal());
+
+    std::printf("- Part I -\n");
+    run_submarine(commands, Action::increase_horizontal_position, Action::increase_depth, Action::decrease_depth);
+    std::printf("\n- Part II -\n");
+    run_submarine(commands, Action::increase_position_and_depth, Action::increase_aim, Action::decrease_aim);
 }
