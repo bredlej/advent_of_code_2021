@@ -4,17 +4,19 @@
 
 #include "day1.h"
 #include <chrono>
-#include <iterator>
+#include <numeric>
+
+constexpr auto summarize(auto iterator, auto amount) {
+    return std::accumulate(iterator, iterator + amount, 0,
+                           [](uint32_t total, uint32_t item ) {return total + item;});
+}
 
 std::vector<uint32_t> group_data(const uint32_t amount, const std::vector<uint32_t> &data) {
     auto remaining_size = data.size();
     auto iterator = data.begin();
     std::vector<uint32_t> result_data;
     while (remaining_size >= amount) {
-        uint32_t sum = *iterator;
-        for (uint32_t i = 1; i < amount; i++) {
-            sum += *std::next(iterator, i);
-        }
+        const auto sum =summarize(iterator, amount);
         result_data.push_back(sum);
         remaining_size--;
         ++iterator;
