@@ -5,6 +5,7 @@
 #include "day1.h"
 #include <chrono>
 #include <numeric>
+#include <cstdio>
 
 constexpr auto summarize(auto iterator, auto amount) {
     return std::accumulate(iterator, iterator + amount, 0,
