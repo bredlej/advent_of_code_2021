@@ -29,7 +29,35 @@ TEST_F(Day3Test, DeterminesCorrectSize) {
 }
 
 TEST_F(Day3Test, ConvertsToDecimal) {
-    ASSERT_EQ(5, binary_to_decimal("01010"));
+    ASSERT_EQ(10, binary_to_decimal("01010"));
+}
+
+TEST_F(Day3Test, MostCommonBitGeneratorWorks) {
+    most_common_bit a, b, c, nonused;
+
+    auto a_ = a(0, a(1, a(0)));
+
+    auto b_ = b(1, b(0, b(1)));
+
+    auto c_ = c(0, c(0));
+
+    auto d_ = c(1);
+    d_(0);
+
+    ASSERT_EQ(0, a_.yield());
+    ASSERT_EQ(1, b_.yield());
+    ASSERT_EQ(0, c_.yield());
+    ASSERT_EQ(1, d_.yield());
+    ASSERT_EQ(1, nonused(1));
+    ASSERT_EQ(1, nonused(1));
+    ASSERT_EQ(0, nonused(0));
+    ASSERT_TRUE(&a_ != &b_ and &b_ != &c_ and &c_ != &d_ and &d_ != &nonused);
+}
+
+TEST_F(Day3Test, ParsesInput)
+{
+    int size = determine_bitsize_with_assertions(input);
+    //auto test = parse_input<>(input);
 }
 
 int main(int ac, char *av[]) {
