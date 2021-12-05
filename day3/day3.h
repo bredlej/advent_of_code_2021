@@ -13,9 +13,9 @@
 #include <string>
 #include <vector>
 
-template<typename T>
+template<typename T, typename V>
 concept is_yieldable = requires(T t) {
-    { t.yield() };
+    { t.yield() } -> std::convertible_to<V>;
 };
 
 constexpr auto yield_val = [](const auto zeroes, const auto ones) {
@@ -50,7 +50,7 @@ public:
     }
 };
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 struct processor {
     void run(const std::vector<std::string> &input);
     [[nodiscard]] T gamma() const;
@@ -60,7 +60,7 @@ struct processor {
     std::array<Y, N> feed_data(const std::string &bits) const;
 };
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 std::array<Y, N> processor<T, N, Y>::feed_data(const std::string &bits) const {
     assert(bits.length() == N);
 
@@ -72,14 +72,14 @@ std::array<Y, N> processor<T, N, Y>::feed_data(const std::string &bits) const {
     return replacement;
 }
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 void processor<T, N, Y>::run(const std::vector<std::string> &input) {
     for (auto &data : input) {
         msb_array = feed_data(data);
     }
 }
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 T processor<T, N, Y>::gamma() const {
     std::bitset<N> bits;
     for (int i = 0; i < N; i++) {
@@ -89,7 +89,7 @@ T processor<T, N, Y>::gamma() const {
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 T processor<T, N, Y>::epsilon() const {
     std::bitset<N> bits;
     for (int i = 0; i < N; i++) {
@@ -99,7 +99,7 @@ T processor<T, N, Y>::epsilon() const {
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, is_yieldable Y>
+template<typename T, size_t N, is_yieldable<int> Y>
 T processor<T, N, Y>::power_consumption() const {
     return gamma() * epsilon();
 }
