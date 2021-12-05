@@ -45,21 +45,21 @@ public:
     }
 };
 
-template<typename T, size_t N, is_yieldable Functor>
+template<typename T, size_t N, is_yieldable Y>
 struct processor {
     void run(const std::vector<std::string> &input);
     [[nodiscard]] T gamma() const;
     [[nodiscard]] T epsilon() const;
     [[nodiscard]] T power_consumption()const ;
-    std::array<Functor, N> msb_array;
-    std::array<Functor, N> feed_data(const std::string &bits) const;
+    std::array<Y, N> msb_array;
+    std::array<Y, N> feed_data(const std::string &bits) const;
 };
 
-template<typename T, size_t N, is_yieldable Functor>
-std::array<Functor, N> processor<T, N, Functor>::feed_data(const std::string &bits) const{
+template<typename T, size_t N, is_yieldable Y>
+std::array<Y, N> processor<T, N, Y>::feed_data(const std::string &bits) const{
     assert(bits.length() == N);
 
-    std::array<Functor, N> replacement;
+    std::array<Y, N> replacement;
     std::bitset<N> bits_of{bits};
     for (int i = 0; i < N; i++) {
         replacement[i] = msb_array[i](bits_of[i]);
@@ -67,15 +67,15 @@ std::array<Functor, N> processor<T, N, Functor>::feed_data(const std::string &bi
     return replacement;
 }
 
-template<typename T, size_t N, is_yieldable Functor>
-void processor<T, N, Functor>::run(const std::vector<std::string> &input) {
+template<typename T, size_t N, is_yieldable Y>
+void processor<T, N, Y>::run(const std::vector<std::string> &input) {
     for (auto &data: input) {
         msb_array = feed_data(data);
     }
 }
 
-template<typename T, size_t N, is_yieldable Functor>
-T processor<T, N, Functor>::gamma() const{
+template<typename T, size_t N, is_yieldable Y>
+T processor<T, N, Y>::gamma() const{
     std::bitset<N> bits;
     for (int i =0; i < N; i++) {
         assert(msb_array[i].yield() != -1);
@@ -84,8 +84,8 @@ T processor<T, N, Functor>::gamma() const{
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, is_yieldable Functor>
-T processor<T, N, Functor>::epsilon() const{
+template<typename T, size_t N, is_yieldable Y>
+T processor<T, N, Y>::epsilon() const{
     std::bitset<N> bits;
     for (int i =0; i < N; i++) {
         assert(msb_array[i].yield() != -1);
@@ -94,8 +94,8 @@ T processor<T, N, Functor>::epsilon() const{
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, is_yieldable Functor>
-T processor<T, N, Functor>::power_consumption() const {
+template<typename T, size_t N, is_yieldable Y>
+T processor<T, N, Y>::power_consumption() const {
     return gamma() * epsilon();
 }
 #endif//ADVENT_OF_CODE_2021_DAY3_H
