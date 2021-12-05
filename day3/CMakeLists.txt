@@ -1,5 +1,4 @@
 add_executable(day3-exec main.cpp)
-target_link_libraries(day3-exec day3)
 
 add_executable(day3-test test_day3.cpp)
 target_link_libraries(day3-test gtest)
