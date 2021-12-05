@@ -39,60 +39,57 @@ public:
     }
 };
 
-template<size_t T>
+template<typename T, size_t N, typename Functor>
 struct processor {
     void run(const std::vector<std::string> &input);
-    uint32_t gamma();
-    uint32_t epsilon();
-    uint32_t power_consumption();
-    std::array<most_common_bit, T> msb_array;
-    std::array<most_common_bit, T> feed_data(const std::string &bits) const;
+    [[nodiscard]] T gamma() const;
+    [[nodiscard]] T epsilon() const;
+    [[nodiscard]] T power_consumption()const ;
+    std::array<Functor, N> msb_array;
+    std::array<Functor, N> feed_data(const std::string &bits) const;
 };
 
-template<size_t T>
-std::array<most_common_bit, T> processor<T>::feed_data(const std::string &bits) const{
+template<typename T, size_t N, typename Functor>
+std::array<Functor, N> processor<T, N, Functor>::feed_data(const std::string &bits) const{
+    assert(bits.length() == N);
 
-    assert(bits.length() == T);
-
-    std::array<most_common_bit, T> replacement;
-    std::bitset<T> bits_of{bits};
-    for (int i = 0; i < T; i++) {
+    std::array<Functor, N> replacement;
+    std::bitset<N> bits_of{bits};
+    for (int i = 0; i < N; i++) {
         replacement[i] = msb_array[i](bits_of[i]);
     }
-
     return replacement;
 }
 
-template<size_t T>
-void processor<T>::run(const std::vector<std::string> &input) {
+template<typename T, size_t N, typename Functor>
+void processor<T, N, Functor>::run(const std::vector<std::string> &input) {
     for (auto &data: input) {
         msb_array = feed_data(data);
     }
 }
 
-template<size_t T>
-uint32_t processor<T>::gamma() {
-    std::bitset<T> bits;
-    for (int i =0; i < T; i++) {
+template<typename T, size_t N, typename Functor>
+T processor<T, N, Functor>::gamma() const{
+    std::bitset<N> bits;
+    for (int i =0; i < N; i++) {
         assert(msb_array[i].yield() != -1);
         bits[i] = msb_array[i].yield();
     }
     return bits.to_ulong();
 }
 
-template<size_t T>
-uint32_t processor<T>::epsilon() {
-    std::bitset<T> bits;
-    for (int i =0; i < T; i++) {
+template<typename T, size_t N, typename Functor>
+T processor<T, N, Functor>::epsilon() const{
+    std::bitset<N> bits;
+    for (int i =0; i < N; i++) {
         assert(msb_array[i].yield() != -1);
         bits[i] = !msb_array[i].yield();
     }
     return bits.to_ulong();
 }
 
-template<size_t T>
-uint32_t processor<T>::power_consumption() {
+template<typename T, size_t N, typename Functor>
+T processor<T, N, Functor>::power_consumption() const {
     return gamma() * epsilon();
 }
-
 #endif//ADVENT_OF_CODE_2021_DAY3_H

@@ -27,7 +27,7 @@ std::vector<std::string> import_data(const std::string &filename) {
 int main() {
     const auto input = import_data("inputfile");
     auto before = std::chrono::high_resolution_clock::now();
-    processor<12> p;
+    processor<uint32_t, 12, most_common_bit> p;
     p.run(input);
     auto [gamma, epsilon, power] = std::make_tuple<>(p.gamma(), p.epsilon(), p.power_consumption());
     auto after = std::chrono::high_resolution_clock::now() - before;

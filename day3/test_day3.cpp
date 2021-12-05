@@ -47,7 +47,7 @@ TEST_F(Day3Test, MostCommonBitGeneratorWorks) {
 }
 
 TEST_F(Day3Test, CalculatesMostCommonBitsFromString) {
-    processor<4> p;
+    processor<uint32_t, 4, most_common_bit> p;
     p.msb_array = p.feed_data("0000");
     ASSERT_EQ(0, p.msb_array[0].yield());
     ASSERT_EQ(0, p.msb_array[1].yield());
@@ -69,7 +69,7 @@ TEST_F(Day3Test, CalculatesMostCommonBitsFromString) {
 
 TEST_F(Day3Test, RunProcessesAllData) {
     const std::vector<std::string> data{"0000", "1111", "1111"};
-    processor<4> p;
+    processor<uint32_t, 4, most_common_bit> p;
     p.run(data);
     ASSERT_EQ(1, p.msb_array[0].yield());
     ASSERT_EQ(1, p.msb_array[1].yield());
@@ -78,19 +78,19 @@ TEST_F(Day3Test, RunProcessesAllData) {
 }
 
 TEST_F(Day3Test, CalculatesGamma) {
-    processor<5> p;
+    processor<uint32_t, 5, most_common_bit> p;
     p.run(input);
     ASSERT_EQ(22, p.gamma());
 }
 
 TEST_F(Day3Test, CalculatesEpsilon) {
-    processor<5> p;
+    processor<uint32_t, 5, most_common_bit> p;
     p.run(input);
     ASSERT_EQ(9, p.epsilon());
 }
 
 TEST_F(Day3Test, CalculatesPowerConsumption) {
-    processor<5> p;
+    processor<uint32_t, 5, most_common_bit> p;
     p.run(input);
     ASSERT_EQ(198, p.power_consumption());
 }
