@@ -24,14 +24,6 @@ protected:
     Day3Test() = default;
 };
 
-TEST_F(Day3Test, DeterminesCorrectSize) {
-    ASSERT_EQ(5, determine_bitsize_with_assertions(input));
-}
-
-TEST_F(Day3Test, ConvertsToDecimal) {
-    ASSERT_EQ(10, binary_to_decimal("01010"));
-}
-
 TEST_F(Day3Test, MostCommonBitGeneratorWorks) {
     most_common_bit a, b, c, nonused;
 
@@ -54,10 +46,53 @@ TEST_F(Day3Test, MostCommonBitGeneratorWorks) {
     ASSERT_TRUE(&a_ != &b_ and &b_ != &c_ and &c_ != &d_ and &d_ != &nonused);
 }
 
-TEST_F(Day3Test, ParsesInput)
-{
-    int size = determine_bitsize_with_assertions(input);
-    //auto test = parse_input<>(input);
+TEST_F(Day3Test, CalculatesMostCommonBitsFromString) {
+    processor<4> p;
+    p.msb_array = p.feed_data("0000");
+    ASSERT_EQ(0, p.msb_array[0].yield());
+    ASSERT_EQ(0, p.msb_array[1].yield());
+    ASSERT_EQ(0, p.msb_array[2].yield());
+    ASSERT_EQ(0, p.msb_array[3].yield());
+
+    p.msb_array = p.feed_data("1111");
+    ASSERT_EQ(-1, p.msb_array[0].yield());
+    ASSERT_EQ(-1, p.msb_array[1].yield());
+    ASSERT_EQ(-1, p.msb_array[2].yield());
+    ASSERT_EQ(-1, p.msb_array[3].yield());
+
+    p.msb_array = p.feed_data("1111");
+    ASSERT_EQ(1, p.msb_array[0].yield());
+    ASSERT_EQ(1, p.msb_array[1].yield());
+    ASSERT_EQ(1, p.msb_array[2].yield());
+    ASSERT_EQ(1, p.msb_array[3].yield());
+}
+
+TEST_F(Day3Test, RunProcessesAllData) {
+    const std::vector<std::string> data{"0000", "1111", "1111"};
+    processor<4> p;
+    p.run(data);
+    ASSERT_EQ(1, p.msb_array[0].yield());
+    ASSERT_EQ(1, p.msb_array[1].yield());
+    ASSERT_EQ(1, p.msb_array[2].yield());
+    ASSERT_EQ(1, p.msb_array[3].yield());
+}
+
+TEST_F(Day3Test, CalculatesGamma) {
+    processor<5> p;
+    p.run(input);
+    ASSERT_EQ(22, p.gamma());
+}
+
+TEST_F(Day3Test, CalculatesEpsilon) {
+    processor<5> p;
+    p.run(input);
+    ASSERT_EQ(9, p.epsilon());
+}
+
+TEST_F(Day3Test, CalculatesPowerConsumption) {
+    processor<5> p;
+    p.run(input);
+    ASSERT_EQ(198, p.power_consumption());
 }
 
 int main(int ac, char *av[]) {

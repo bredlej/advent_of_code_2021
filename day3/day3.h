@@ -6,7 +6,6 @@
 #include <array>
 #include <bitset>
 #include <cassert>
-#include <cppcoro/generator.hpp>
 #include <cstdint>
 #include <cstdio>
 #include <functional>
@@ -40,23 +39,60 @@ public:
     }
 };
 
-
-constexpr auto determine_bitsize_with_assertions = [](const std::vector<std::string> &values) {
-    auto iterator = values.begin();
-    auto size = iterator->length();
-    for (const auto &it : values) {
-        if (it.length() != size) { size = -1; }
-    }
-    return size;
+template<size_t T>
+struct processor {
+    void run(const std::vector<std::string> &input);
+    uint32_t gamma();
+    uint32_t epsilon();
+    uint32_t power_consumption();
+    std::array<most_common_bit, T> msb_array;
+    std::array<most_common_bit, T> feed_data(const std::string &bits) const;
 };
 
-uint64_t binary_to_decimal(const std::string &value) {
-    return std::stoull(value, nullptr, 2);
+template<size_t T>
+std::array<most_common_bit, T> processor<T>::feed_data(const std::string &bits) const{
+
+    assert(bits.length() == T);
+
+    std::array<most_common_bit, T> replacement;
+    std::bitset<T> bits_of{bits};
+    for (int i = 0; i < T; i++) {
+        replacement[i] = msb_array[i](bits_of[i]);
+    }
+
+    return replacement;
 }
 
-template<int T>
-std::array<most_common_bit, T> parse_input(const std::vector<std::string> &values) {
-    return std::array<most_common_bit, T>();
+template<size_t T>
+void processor<T>::run(const std::vector<std::string> &input) {
+    for (auto &data: input) {
+        msb_array = feed_data(data);
+    }
+}
+
+template<size_t T>
+uint32_t processor<T>::gamma() {
+    std::bitset<T> bits;
+    for (int i =0; i < T; i++) {
+        assert(msb_array[i].yield() != -1);
+        bits[i] = msb_array[i].yield();
+    }
+    return bits.to_ulong();
+}
+
+template<size_t T>
+uint32_t processor<T>::epsilon() {
+    std::bitset<T> bits;
+    for (int i =0; i < T; i++) {
+        assert(msb_array[i].yield() != -1);
+        bits[i] = !msb_array[i].yield();
+    }
+    return bits.to_ulong();
+}
+
+template<size_t T>
+uint32_t processor<T>::power_consumption() {
+    return gamma() * epsilon();
 }
 
 #endif//ADVENT_OF_CODE_2021_DAY3_H

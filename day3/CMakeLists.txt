@@ -1,5 +1,4 @@
 add_library(day3 day3.cpp)
-target_link_libraries(day3 cppcoro)
 
 add_executable(day3-exec main.cpp)
 target_link_libraries(day3-exec day3)
@@ -9,3 +8,9 @@ target_link_libraries(day3-test gtest day3)
 add_test(TestDay3 day3-test)
 
 target_include_directories(day3 PUBLIC .)
+
+add_custom_command(
+        TARGET day3-exec POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/day3/inputfile
+        ${CMAKE_CURRENT_BINARY_DIR})
