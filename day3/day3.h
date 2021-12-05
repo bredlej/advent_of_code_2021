@@ -11,6 +11,12 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <concepts>
+
+template<typename T>
+concept is_yieldable = requires(T) {
+    {T::yield};
+};
 
 constexpr auto yield_val = [](const auto zeroes, const auto ones) {
     if (zeroes > ones) { return 0; }
@@ -39,7 +45,7 @@ public:
     }
 };
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 struct processor {
     void run(const std::vector<std::string> &input);
     [[nodiscard]] T gamma() const;
@@ -49,7 +55,7 @@ struct processor {
     std::array<Functor, N> feed_data(const std::string &bits) const;
 };
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 std::array<Functor, N> processor<T, N, Functor>::feed_data(const std::string &bits) const{
     assert(bits.length() == N);
 
@@ -61,14 +67,14 @@ std::array<Functor, N> processor<T, N, Functor>::feed_data(const std::string &bi
     return replacement;
 }
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 void processor<T, N, Functor>::run(const std::vector<std::string> &input) {
     for (auto &data: input) {
         msb_array = feed_data(data);
     }
 }
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 T processor<T, N, Functor>::gamma() const{
     std::bitset<N> bits;
     for (int i =0; i < N; i++) {
@@ -78,7 +84,7 @@ T processor<T, N, Functor>::gamma() const{
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 T processor<T, N, Functor>::epsilon() const{
     std::bitset<N> bits;
     for (int i =0; i < N; i++) {
@@ -88,7 +94,7 @@ T processor<T, N, Functor>::epsilon() const{
     return bits.to_ulong();
 }
 
-template<typename T, size_t N, typename Functor>
+template<typename T, size_t N, is_yieldable Functor>
 T processor<T, N, Functor>::power_consumption() const {
     return gamma() * epsilon();
 }
